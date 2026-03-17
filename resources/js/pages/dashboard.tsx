@@ -15,6 +15,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
     const { auth } = usePage().props;
+
     const handleClick = useCallback(async () => {
         await fetch('/api/test', {
             headers: {
