@@ -1,19 +1,18 @@
-import { Head, usePage } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
-import type { BreadcrumbItem } from '@/types';
+import { usePage } from '@inertiajs/react';
 import { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
+import { home } from '@/routes';
+import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
-        href: dashboard(),
+        href: home(),
     },
 ];
 
-export default function Dashboard() {
+export default function App() {
     const { auth } = usePage().props;
 
     const handleClick = useCallback(async () => {
@@ -26,10 +25,10 @@ export default function Dashboard() {
         })
             .then((r) => r.json())
             .then(console.log);
-    }, []);
+    }, [auth.token]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Button onClick={handleClick}>test</Button>
             </div>

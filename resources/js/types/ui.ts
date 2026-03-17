@@ -14,3 +14,8 @@ export type AuthLayoutProps = {
     title?: string;
     description?: string;
 };
+
+export type Flash = {
+    success: string | null;
+    error: string | null;
+};
