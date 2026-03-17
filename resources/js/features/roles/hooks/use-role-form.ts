@@ -36,7 +36,7 @@ export const useRoleForm = () => {
     );
 
     const handleSubmit = useCallback(
-        (e: React.FormEvent) => {
+        (e: SubmitEvent) => {
             e.preventDefault();
 
             if (mode === 'create') {
