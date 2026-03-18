@@ -1,16 +1,15 @@
 import type { ColumnDef, Table as TableDef } from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { DataTableProgressSpinner } from './data-table-progress-spinner';
+
+declare module '@tanstack/react-table' {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface ColumnMeta<TData, TValue> {
+        fitWidth?: boolean;
+    }
+}
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -23,6 +22,50 @@ interface DataTableProps<TData, TValue> {
 
 const TANSTACK_DEFAULT_SIZE = 150;
 
+function getColumnStyle(
+    size: number | undefined,
+    maxSize: number | undefined,
+    fitWidth: boolean | undefined,
+    defaultColumnSize: number | undefined,
+): React.CSSProperties | undefined {
+    // fitWidth: shrink to content, never inherits defaultColumn.size.
+    if (fitWidth) {
+        return {
+            width: '1%',
+            whiteSpace: 'nowrap',
+        };
+    }
+
+    const hasExplicitSize =
+        size !== undefined && size !== TANSTACK_DEFAULT_SIZE;
+
+    if (hasExplicitSize) {
+        // Explicit per-column size: lock it with both width AND minWidth so the
+        // browser cannot shrink or grow it regardless of content or table width.
+        return {
+            width: `${size}px`,
+            minWidth: `${size}px`,
+            maxWidth: maxSize ? `${maxSize}px` : undefined,
+        };
+    }
+
+    if (defaultColumnSize !== undefined) {
+        // Global default size: same treatment — width + minWidth prevents dancing
+        // across pages where content lengths differ.
+        return {
+            width: `${defaultColumnSize}px`,
+            minWidth: `${defaultColumnSize}px`,
+            maxWidth: maxSize ? `${maxSize}px` : undefined,
+        };
+    }
+
+    if (maxSize) {
+        return { maxWidth: `${maxSize}px` };
+    }
+
+    return undefined;
+}
+
 export function DataTable<TData, TValue>({
     columns,
     table,
@@ -31,50 +74,45 @@ export function DataTable<TData, TValue>({
     fixedLayout = false,
     maxHeight,
 }: DataTableProps<TData, TValue>) {
+    const defaultColumnSize = table.options.defaultColumn?.size;
+
+    const hasFitWidthColumn = table
+        .getAllColumns()
+        .some((col) => col.columnDef.meta?.fitWidth);
+
+    const useTableFixed = fixedLayout && !hasFitWidthColumn;
+
     return (
         <div
             className={cn('relative w-full overflow-auto rounded-md border')}
             style={{ maxHeight: maxHeight ? `${maxHeight}px` : '600px' }}
         >
             {isLoading && <DataTableProgressSpinner isFetching={isLoading} />}
-            <Table className={`w-full ${fixedLayout ? 'table-fixed' : ''}`}>
-                <TableHeader className="bg-muted">
+            <table
+                className={cn(
+                    'w-full caption-bottom text-sm',
+                    useTableFixed && 'table-fixed',
+                )}
+            >
+                <thead className="bg-muted [&_tr]:border-b">
                     {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
+                        <tr
+                            key={headerGroup.id}
+                            className="border-b transition-colors"
+                        >
                             {headerGroup.headers.map((header) => {
-                                const isActions = header.id === 'actions';
                                 const colDef = header.column.columnDef;
-                                const hasExplicitSize =
-                                    !isActions &&
-                                    colDef.size !== undefined &&
-                                    colDef.size !== TANSTACK_DEFAULT_SIZE;
-                                const maxSize = !isActions
-                                    ? colDef.maxSize
-                                    : undefined;
 
                                 return (
-                                    <TableHead
+                                    <th
                                         key={header.id}
-                                        className="sticky top-0 z-20 bg-muted"
-                                        style={
-                                            isActions
-                                                ? {
-                                                      width: '1px',
-                                                      whiteSpace: 'nowrap',
-                                                  }
-                                                : hasExplicitSize
-                                                  ? {
-                                                        width: `${header.getSize()}px`,
-                                                        maxWidth: maxSize
-                                                            ? `${maxSize}px`
-                                                            : undefined,
-                                                    }
-                                                  : maxSize
-                                                    ? {
-                                                          maxWidth: `${maxSize}px`,
-                                                      }
-                                                    : undefined
-                                        }
+                                        className="sticky top-0 z-20 h-10 bg-muted px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"
+                                        style={getColumnStyle(
+                                            colDef.size,
+                                            colDef.maxSize,
+                                            colDef.meta?.fitWidth,
+                                            defaultColumnSize,
+                                        )}
                                     >
                                         {header.isPlaceholder
                                             ? null
@@ -83,54 +121,35 @@ export function DataTable<TData, TValue>({
                                                       .header,
                                                   header.getContext(),
                                               )}
-                                    </TableHead>
+                                    </th>
                                 );
                             })}
-                        </TableRow>
+                        </tr>
                     ))}
-                </TableHeader>
-                <TableBody>
+                </thead>
+                <tbody className="[&_tr:last-child]:border-0">
                     {table.getRowModel().rows?.length ? (
                         table.getRowModel().rows.map((row) => (
-                            <TableRow
+                            <tr
                                 key={row.id}
-                                data-state={row.getIsSelected() && 'selected'}
+                                data-state={
+                                    row.getIsSelected() ? 'selected' : undefined
+                                }
+                                className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                             >
                                 {row.getVisibleCells().map((cell) => {
-                                    const isActions =
-                                        cell.column.id === 'actions';
                                     const colDef = cell.column.columnDef;
-                                    const hasExplicitSize =
-                                        !isActions &&
-                                        colDef.size !== undefined &&
-                                        colDef.size !== TANSTACK_DEFAULT_SIZE;
-                                    const maxSize = !isActions
-                                        ? colDef.maxSize
-                                        : undefined;
 
                                     return (
-                                        <TableCell
+                                        <td
                                             key={cell.id}
-                                            style={
-                                                isActions
-                                                    ? {
-                                                          width: '1px',
-                                                          whiteSpace: 'nowrap',
-                                                      }
-                                                    : hasExplicitSize
-                                                      ? {
-                                                            width: `${cell.column.getSize()}px`,
-                                                            maxWidth: maxSize
-                                                                ? `${maxSize}px`
-                                                                : undefined,
-                                                        }
-                                                      : maxSize
-                                                        ? {
-                                                              maxWidth: `${maxSize}px`,
-                                                          }
-                                                        : undefined
-                                            }
-                                            className="border-r border-border last:border-r-0"
+                                            style={getColumnStyle(
+                                                colDef.size,
+                                                colDef.maxSize,
+                                                colDef.meta?.fitWidth,
+                                                defaultColumnSize,
+                                            )}
+                                            className="border-r border-border p-2 align-middle last:border-r-0 [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]"
                                         >
                                             <div className="[&>div]:text-wrap">
                                                 {flexRender(
@@ -138,23 +157,23 @@ export function DataTable<TData, TValue>({
                                                     cell.getContext(),
                                                 )}
                                             </div>
-                                        </TableCell>
+                                        </td>
                                     );
                                 })}
-                            </TableRow>
+                            </tr>
                         ))
                     ) : (
-                        <TableRow>
-                            <TableCell
+                        <tr>
+                            <td
                                 colSpan={columns.length}
-                                className="h-24 text-center"
+                                className="h-24 p-2 text-center align-middle"
                             >
                                 {customEmptyMessage}
-                            </TableCell>
-                        </TableRow>
+                            </td>
+                        </tr>
                     )}
-                </TableBody>
-            </Table>
+                </tbody>
+            </table>
         </div>
     );
 }

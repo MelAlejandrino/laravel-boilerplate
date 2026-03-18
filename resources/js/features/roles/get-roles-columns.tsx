@@ -73,6 +73,7 @@ export const roleColumns = ({
                     </Button>
                 </div>
             ),
+            meta: { fitWidth: true },
         },
     ];
 };

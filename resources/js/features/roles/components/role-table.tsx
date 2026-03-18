@@ -31,6 +31,9 @@ export const RoleTable = ({ roles, filters }: RoleTableProps) => {
         rowCount: roles.meta.total,
         manualPagination: true,
         getCoreRowModel: getCoreRowModel(),
+        defaultColumn: {
+            size: 200,
+        },
     });
 
     return <DataTable maxHeight={500} columns={columns} table={table} />;

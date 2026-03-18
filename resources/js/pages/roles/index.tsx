@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
@@ -28,6 +28,7 @@ export default function RolesIndex({
     flash,
     filters,
 }: Props) {
+    console.log('usePage', usePage().props);
     const { open, deleting, closeDelete } = useRoleStore();
 
     useEffect(() => {
