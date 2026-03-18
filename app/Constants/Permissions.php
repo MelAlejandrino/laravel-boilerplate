@@ -4,6 +4,8 @@ namespace App\Constants;
 
 class Permissions
 {
+    const DASHBOARD_VIEW = 'view dashboard';
+
     const USER_VIEW = 'view users';
     const USER_CREATE = 'create users';
     const USER_EDIT = 'edit users';
@@ -15,6 +17,7 @@ class Permissions
     const ROLE_DELETE = 'delete roles';
 
     const ALL = [
+        self::DASHBOARD_VIEW,
         self::USER_VIEW,
         self::USER_CREATE,
         self::USER_EDIT,

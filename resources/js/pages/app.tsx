@@ -1,9 +1,10 @@
 import { usePage } from '@inertiajs/react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { home } from '@/routes';
-import type { BreadcrumbItem } from '@/types';
+import type { BreadcrumbItem, Flash } from '@/types';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,8 +13,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function App() {
+interface Props {
+    flash: Flash;
+}
+
+export default function App({ flash }: Props) {
     const { auth } = usePage().props;
+
+    useEffect(() => {
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+    }, [flash]);
 
     const handleClick = useCallback(async () => {
         await fetch('/api/test', {

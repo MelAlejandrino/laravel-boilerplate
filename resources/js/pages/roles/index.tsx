@@ -14,6 +14,8 @@ import type { Role, RolesFilters } from '@/features/roles/types';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/roles';
 import type { Flash } from '@/types';
+import { usePermission } from '@/hooks/use-permission';
+import { PERMISSIONS } from '@/constants/permissions';
 
 interface Props {
     roles: PaginatedData<Role>;
@@ -28,7 +30,6 @@ export default function RolesIndex({
     flash,
     filters,
 }: Props) {
-    console.log('usePage', usePage().props);
     const { open, deleting, closeDelete } = useRoleStore();
 
     useEffect(() => {
@@ -41,13 +42,19 @@ export default function RolesIndex({
         }
     }, [flash]);
 
+    const { hasPermission } = usePermission();
+
     return (
         <AppLayout>
             <Head title="Roles" />
             <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Roles</h1>
-                    <Button onClick={() => open('create')}>Create Role</Button>
+                    {hasPermission(PERMISSIONS.ROLE_CREATE) && (
+                        <Button onClick={() => open('create')}>
+                            Create Role
+                        </Button>
+                    )}
                 </div>
                 <DataTableSearch
                     url={index().url}

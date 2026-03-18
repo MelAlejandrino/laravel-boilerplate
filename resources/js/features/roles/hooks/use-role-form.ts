@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { useCallback, useEffect } from 'react';
+import { FormEvent, useCallback, useEffect } from 'react';
 
 import roles from '@/routes/roles';
 import { useRoleStore } from '../store';
@@ -36,7 +36,7 @@ export const useRoleForm = () => {
     );
 
     const handleSubmit = useCallback(
-        (e: SubmitEvent) => {
+        (e: React.FormEvent<HTMLElement>) => {
             e.preventDefault();
 
             if (mode === 'create') {

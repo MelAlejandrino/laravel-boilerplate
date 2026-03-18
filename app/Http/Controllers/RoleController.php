@@ -22,6 +22,7 @@ class RoleController extends Controller
         return Inertia::render('roles/index', [
             'roles' => RoleResource::collection(
                 Role::with('permissions')
+                    ->where('name', '!=', 'super-admin')
                     ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
                     ->when($sort, fn($q) => $q->orderBy($sort, $direction))
                     ->paginate($perPage)
@@ -51,6 +52,10 @@ class RoleController extends Controller
 
     public function update(RoleRequest $request, Role $role)
     {
+        if ($role->name === 'super-admin') {
+            return back()->with('error', 'Super admin role cannot be modified.');
+        }
+
         $role->update(['name' => $request->name]);
 
         if ($request->permissions) {
@@ -62,6 +67,10 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        if ($role->name === 'super-admin') {
+            return back()->with('error', 'Super admin role cannot be deleted.');
+        }
+
         if ($role->users()->count() > 0) {
             return back()->with('error', 'Role is still assigned to users and cannot be deleted.');
         }

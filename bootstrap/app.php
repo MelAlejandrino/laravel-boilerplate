@@ -7,6 +7,8 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,7 +38,21 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->shouldRenderJsonWhen(function (Request $request) {
-            return $request->is('api/*');
+        $exceptions->render(function (\Spatie\Permission\Exceptions\UnauthorizedException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json(['message' => 'Unauthorized.'], 403);
+            }
+
+            return redirect()->route('forbidden');
+        });
+
+        $exceptions->respond(function (Response $response) {
+            if (in_array($response->getStatusCode(), [404, 500, 503]) && !app()->environment('testing')) {
+                return Inertia::render('error', ['status' => $response->getStatusCode()])
+                    ->toResponse(request())
+                    ->setStatusCode($response->getStatusCode());
+            }
+
+            return $response;
         });
     })->create();

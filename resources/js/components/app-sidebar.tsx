@@ -12,13 +12,14 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { mainNavItems } from '@/lib/page-routes';
 import { home } from '@/routes';
 import type { NavItem } from '@/types';
+import { useNavItems } from '@/hooks/use-nav-items';
 
 const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
+    const { mainNavItems } = useNavItems();
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>

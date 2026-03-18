@@ -7,6 +7,7 @@ import { index } from '@/routes/roles';
 import { roleColumns } from '../get-roles-columns';
 import { useRoleStore } from '../store';
 import type { Role, RolesFilters } from '../types';
+import { usePermission } from '@/hooks/use-permission';
 
 interface RoleTableProps {
     roles: PaginatedData<Role>;
@@ -15,6 +16,7 @@ interface RoleTableProps {
 
 export const RoleTable = ({ roles, filters }: RoleTableProps) => {
     const { open, openDelete } = useRoleStore();
+    const { hasPermission } = usePermission();
 
     const columns = roleColumns({
         url: index().url,
@@ -23,6 +25,7 @@ export const RoleTable = ({ roles, filters }: RoleTableProps) => {
         currentDirection: filters.direction as SortDirection,
         onEdit: (role) => open('edit', role),
         onDelete: openDelete,
+        hasPermission,
     });
 
     const table = useReactTable({
