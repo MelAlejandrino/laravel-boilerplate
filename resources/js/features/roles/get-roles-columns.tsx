@@ -6,8 +6,8 @@ import { DataTableSort } from '@/components/data-table/data-table-sort';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
-import type { Role } from './types';
 import { PERMISSIONS } from '@/constants/permissions';
+import type { Role } from './types';
 
 interface RoleColumnsProps {
     url: string;

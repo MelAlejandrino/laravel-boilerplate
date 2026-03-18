@@ -3,12 +3,12 @@ import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-table';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
 import type { SortDirection } from '@/components/data-table/data-table-sort';
+import { usePermission } from '@/hooks/use-permission';
 import { index } from '@/routes/users';
 
+import { userColumns } from '../get-user-columns';
 import { useUserStore } from '../store';
 import type { User, UsersFilters } from '../types';
-import { usePermission } from '@/hooks/use-permission';
-import { userColumns } from '../get-user-columns';
 
 interface UserTableProps {
     users: PaginatedData<User>;

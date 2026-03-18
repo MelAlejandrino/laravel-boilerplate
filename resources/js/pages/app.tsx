@@ -1,10 +1,10 @@
 import { usePage } from '@inertiajs/react';
 import { useCallback, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { home } from '@/routes';
 import type { BreadcrumbItem, Flash } from '@/types';
-import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,6 +24,7 @@ export default function App({ flash }: Props) {
         if (flash?.success) {
             toast.success(flash.success);
         }
+
         if (flash?.error) {
             toast.error(flash.error);
         }

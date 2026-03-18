@@ -3,11 +3,11 @@ import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { DataTable } from '@/components/data-table';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
+import { usePermission } from '@/hooks/use-permission';
 import { index } from '@/routes/roles';
 import { roleColumns } from '../get-roles-columns';
 import { useRoleStore } from '../store';
 import type { Role, RolesFilters } from '../types';
-import { usePermission } from '@/hooks/use-permission';
 
 interface RoleTableProps {
     roles: PaginatedData<Role>;

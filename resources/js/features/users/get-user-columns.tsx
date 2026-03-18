@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { PERMISSIONS } from '@/constants/permissions';
 
-import type { User, UsersFilters } from './types';
+import type { User } from './types';
 
 interface UserColumnsProps {
     url: string;

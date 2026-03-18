@@ -1,8 +1,9 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
+import type { PaginatedData } from '@/components/data-table/data-table-pagination';
 import { DataTableSearch } from '@/components/data-table/data-table-search';
 import { Button } from '@/components/ui/button';
 import { PERMISSIONS } from '@/constants/permissions';
@@ -11,10 +12,9 @@ import { UserSheet } from '@/features/users/components/user-sheet';
 import { UserTable } from '@/features/users/components/user-table';
 import { useUserStore } from '@/features/users/store';
 import type { User, UsersFilters } from '@/features/users/types';
-import AppLayout from '@/layouts/app-layout';
-import type { PaginatedData } from '@/components/data-table/data-table-pagination';
-import { index } from '@/routes/users';
 import { usePermission } from '@/hooks/use-permission';
+import AppLayout from '@/layouts/app-layout';
+import { index } from '@/routes/users';
 
 interface Props {
     users: PaginatedData<User>;
@@ -28,8 +28,13 @@ export default function UsersIndex({ users, roles, filters, flash }: Props) {
     const { hasPermission } = usePermission();
 
     useEffect(() => {
-        if (flash?.error) toast.error(flash.error);
-        if (flash?.success) toast.success(flash.success);
+        if (flash?.error) {
+            toast.error(flash.error);
+        }
+
+        if (flash?.success) {
+            toast.success(flash.success);
+        }
     }, [flash]);
 
     return (

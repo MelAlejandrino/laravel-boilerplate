@@ -1,5 +1,5 @@
 import { useForm } from '@inertiajs/react';
-import { FormEvent, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import roles from '@/routes/roles';
 import { useRoleStore } from '../store';

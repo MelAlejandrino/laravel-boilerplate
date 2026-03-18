@@ -3,9 +3,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
+import VirtualizedDropdown from '@/components/virtualized-dropdown';
 import { useUserForm } from '../hooks/use-user-form';
 import { useUserStore } from '../store';
-import VirtualizedDropdown from '@/components/virtualized-dropdown';
 
 interface UserFormProps {
     roles: string[];

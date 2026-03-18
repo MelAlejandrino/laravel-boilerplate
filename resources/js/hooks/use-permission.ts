@@ -7,7 +7,10 @@ export const usePermission = () => {
 
     const hasPermission = useCallback(
         (permission: string) => {
-            if (auth.roles.includes('super-admin')) return true;
+            if (auth.roles.includes('super-admin')) {
+return true;
+}
+
             return auth.permissions.includes(permission);
         },
         [auth.permissions, auth.roles],

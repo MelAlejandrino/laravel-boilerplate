@@ -1,6 +1,7 @@
 import {useVirtualizer} from "@tanstack/react-virtual";
 import {ChevronDown} from "lucide-react";
 import {useState, useMemo, useRef, useLayoutEffect, useCallback} from "react";
+import {Button} from "@/components/ui/button";
 import {Checkbox} from "@/components/ui/checkbox";
 import {
     Command,
@@ -10,14 +11,13 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
-import {cn} from "@/lib/utils";
-
-import {Button} from "@/components/ui/button";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import {cn} from "@/lib/utils";
+
 
 export type BaseOption = { id: string | number; name?: string };
 
@@ -60,6 +60,7 @@ function VirtualizedDropdown<T extends BaseOption>({
             typeof idSet === "function"
                 ? idSet(opt)
                 : (opt[idSet as keyof T] ?? opt.id);
+
         return `${id}::${name}`;
     };
 
@@ -72,6 +73,7 @@ function VirtualizedDropdown<T extends BaseOption>({
             if (typeof nameSet === "string" && nameSet.includes("+")) {
                 // Split by '+' and trim spaces
                 const keys = nameSet.split("+").map((k) => k.trim());
+
                 return keys
                     .map((k) => (opt[k as keyof T] ?? "").toString())
                     .filter(Boolean)
@@ -86,8 +88,12 @@ function VirtualizedDropdown<T extends BaseOption>({
 
     // Map selection to objects
     const selected: T[] = useMemo(() => {
-        if (!value) return [];
+        if (!value) {
+return [];
+}
+
         const values = single ? [value as T] : (value as T[]);
+
         return values.map((v) => {
             const found = data.find((d) => {
                 const idV =
@@ -98,8 +104,10 @@ function VirtualizedDropdown<T extends BaseOption>({
                     typeof idSet === "function"
                         ? idSet(d)
                         : (d[idSet as keyof T] ?? d.id);
+
                 return idV === idD;
             });
+
             return (
                 found ??
                 (typeof v === "object"
@@ -111,7 +119,10 @@ function VirtualizedDropdown<T extends BaseOption>({
 
     // Filter options client-side
     const filteredOptions = useMemo(() => {
-        if (!search.trim()) return data;
+        if (!search.trim()) {
+return data;
+}
+
         const term = search.toLowerCase();
 
         return data.filter((opt) =>
@@ -121,7 +132,9 @@ function VirtualizedDropdown<T extends BaseOption>({
 
     const toggleValue = useCallback(
         (option: T) => {
-            if (!onChange) return;
+            if (!onChange) {
+return;
+}
 
             if (single) {
                 onChange(option);
@@ -136,6 +149,7 @@ function VirtualizedDropdown<T extends BaseOption>({
                         typeof idSet === "function"
                             ? idSet(option)
                             : (option[idSet as keyof T] ?? option.id);
+
                     return idS === idO;
                 });
 
@@ -149,12 +163,16 @@ function VirtualizedDropdown<T extends BaseOption>({
                             typeof idSet === "function"
                                 ? idSet(option)
                                 : (option[idSet as keyof T] ?? option.id);
+
                         return idS !== idO;
                     })
                     : [...selected, option];
 
                 onChange(newSelected);
-                if (!keepOpenOnSelect) setOpen(false);
+
+                if (!keepOpenOnSelect) {
+setOpen(false);
+}
             }
         },
         [onChange, single, selected, keepOpenOnSelect, idSet],
@@ -173,6 +191,7 @@ function VirtualizedDropdown<T extends BaseOption>({
     useLayoutEffect(() => {
         if (open) {
             const id = requestAnimationFrame(() => rowVirtualizer.measure());
+
             return () => cancelAnimationFrame(id);
         }
     }, [open, filteredOptions, rowVirtualizer]);
@@ -182,7 +201,10 @@ function VirtualizedDropdown<T extends BaseOption>({
             open={open}
             onOpenChange={(val) => {
                 setOpen(val);
-                if (!val) setSearch("");
+
+                if (!val) {
+setSearch("");
+}
             }}
         >
             <PopoverTrigger asChild>
@@ -238,6 +260,7 @@ function VirtualizedDropdown<T extends BaseOption>({
                                                 selected.some((s) => {
                                                     const idS = typeof idSet === "function" ? idSet(s) : (s[idSet as keyof T] ?? s.id);
                                                     const idO = typeof idSet === "function" ? idSet(opt) : (opt[idSet as keyof T] ?? opt.id);
+
                                                     return idS === idO;
                                                 }),
                                             );
@@ -248,6 +271,7 @@ function VirtualizedDropdown<T extends BaseOption>({
                                                     (s) => !filteredOptions.some((opt) => {
                                                         const idS = typeof idSet === "function" ? idSet(s) : (s[idSet as keyof T] ?? s.id);
                                                         const idO = typeof idSet === "function" ? idSet(opt) : (opt[idSet as keyof T] ?? opt.id);
+
                                                         return idS === idO;
                                                     }),
                                                 );
@@ -258,6 +282,7 @@ function VirtualizedDropdown<T extends BaseOption>({
                                                     (opt) => !selected.some((s) => {
                                                         const idS = typeof idSet === "function" ? idSet(s) : (s[idSet as keyof T] ?? s.id);
                                                         const idO = typeof idSet === "function" ? idSet(opt) : (opt[idSet as keyof T] ?? opt.id);
+
                                                         return idS === idO;
                                                     }),
                                                 );
@@ -273,6 +298,7 @@ function VirtualizedDropdown<T extends BaseOption>({
                                                     selected.some((s) => {
                                                         const idS = typeof idSet === "function" ? idSet(s) : (s[idSet as keyof T] ?? s.id);
                                                         const idO = typeof idSet === "function" ? idSet(opt) : (opt[idSet as keyof T] ?? opt.id);
+
                                                         return idS === idO;
                                                     }),
                                                 )
@@ -294,8 +320,10 @@ function VirtualizedDropdown<T extends BaseOption>({
                                         const isSelected = selected.some((s) => {
                                             const idS = typeof idSet === "function" ? idSet(s) : (s[idSet as keyof T] ?? s.id);
                                             const idO = typeof idSet === "function" ? idSet(option) : (option[idSet as keyof T] ?? option.id);
+
                                             return idS === idO;
                                         });
+
                                         return (
                                             <CommandItem
                                                 key={getOptionKey(option)}

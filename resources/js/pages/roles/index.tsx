@@ -1,21 +1,21 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
 import { DataTablePagination } from '@/components/data-table/data-table-pagination';
 import { DataTableSearch } from '@/components/data-table/data-table-search';
 import { Button } from '@/components/ui/button';
+import { PERMISSIONS } from '@/constants/permissions';
 import { RoleDeleteDialog } from '@/features/roles/components/role-delete-dialog';
 import { RoleSheet } from '@/features/roles/components/role-sheet';
 import { RoleTable } from '@/features/roles/components/role-table';
 import { useRoleStore } from '@/features/roles/store';
 import type { Role, RolesFilters } from '@/features/roles/types';
 
+import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/roles';
 import type { Flash } from '@/types';
-import { usePermission } from '@/hooks/use-permission';
-import { PERMISSIONS } from '@/constants/permissions';
 
 interface Props {
     roles: PaginatedData<Role>;
