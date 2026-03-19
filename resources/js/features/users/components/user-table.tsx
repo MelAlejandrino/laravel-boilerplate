@@ -3,6 +3,7 @@ import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { DataTable } from '@/components/data-table';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
 import type { SortDirection } from '@/components/data-table/data-table-sort';
+import { useLoading } from '@/hooks/use-loading';
 import { usePermission } from '@/hooks/use-permission';
 import { index } from '@/routes/users';
 
@@ -37,5 +38,7 @@ export const UserTable = ({ users, filters }: UserTableProps) => {
         getCoreRowModel: getCoreRowModel(),
     });
 
-    return <DataTable columns={columns} table={table} />;
+    const { isLoading } = useLoading();
+
+    return <DataTable columns={columns} table={table} isLoading={isLoading} />;
 };

@@ -3,6 +3,7 @@ import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { DataTable } from '@/components/data-table';
 import type { PaginatedData } from '@/components/data-table/data-table-pagination';
+import { useLoading } from '@/hooks/use-loading';
 import { usePermission } from '@/hooks/use-permission';
 import { index } from '@/routes/roles';
 import { roleColumns } from '../get-roles-columns';
@@ -39,5 +40,14 @@ export const RoleTable = ({ roles, filters }: RoleTableProps) => {
         },
     });
 
-    return <DataTable maxHeight={500} columns={columns} table={table} />;
+    const { isLoading } = useLoading();
+
+    return (
+        <DataTable
+            maxHeight={500}
+            columns={columns}
+            table={table}
+            isLoading={isLoading}
+        />
+    );
 };
