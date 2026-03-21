@@ -12,7 +12,7 @@ class ActivityLogController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->integer('per_page', 10);
-        $search = $request->string('search')->trim();
+        $search = $request->string('search')->trim()->toString() ?: null;
         $page = $request->integer('page', 1);
         $sort = $request->string('sort')->toString();
         $direction = $request->string('direction', 'desc')->toString();

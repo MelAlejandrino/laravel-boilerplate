@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Constants\HomeRoutes;
+use App\Constants\Permissions;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -20,7 +22,22 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\Laravel\Fortify\Contracts\LoginResponse::class, function () {
+            return new class implements \Laravel\Fortify\Contracts\LoginResponse {
+                public function toResponse($request)
+                {
+                    $user = $request->user();
+
+                    foreach (\App\Constants\HomeRoutes::PRIORITY as $permission => $routeName) {
+                        if ($user->can($permission)) {
+                            return redirect()->route($routeName);
+                        }
+                    }
+
+                    return redirect()->route('forbidden');
+                }
+            };
+        });
     }
 
     /**

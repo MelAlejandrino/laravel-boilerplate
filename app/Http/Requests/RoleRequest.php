@@ -18,8 +18,28 @@ class RoleRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255', 'unique:roles,name,' . $roleId],
-            'permissions' => ['nullable', 'array'],
+            'permissions' => ['required', 'array', 'min:1'],
             'permissions.*' => ['exists:permissions,name'],
+        ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $permissions = $this->input('permissions', []);
+            $hasView = collect($permissions)->contains(fn($p) => str_starts_with($p, 'view '));
+
+            if (!$hasView) {
+                $validator->errors()->add('permissions', 'At least one view permission is required.');
+            }
+        });
+    }
+
+    public function messages(): array
+    {
+        return [
+            'permissions.required' => 'At least one permission is required.',
+            'permissions.min' => 'At least one permission is required.',
         ];
     }
 }

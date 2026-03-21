@@ -8,7 +8,7 @@ interface DataTableSortProps {
     label: string;
     column: string;
     url: string;
-    params?: Record<string, string | number | null>;
+    params?: Record<string, string | number | null | boolean>;
     currentSort?: string | null;
     currentDirection?: SortDirection;
 }

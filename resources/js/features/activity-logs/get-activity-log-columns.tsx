@@ -6,7 +6,7 @@ import type { ActivityLog } from './types';
 
 interface ActivityLogColumnsProps {
     url: string;
-    params?: Record<string, string | number | null>;
+    params?: Record<string, string | number | null | boolean>;
     currentSort?: string;
     currentDirection?: SortDirection;
 }

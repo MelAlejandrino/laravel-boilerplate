@@ -31,7 +31,7 @@ export interface PaginatedData<T> {
 interface DataTablePaginationProps {
     meta: PaginationMeta;
     url: string;
-    params?: Record<string, string | number | null>;
+    params?: Record<string, string | number | null | boolean>;
 }
 
 export const DataTablePagination = ({

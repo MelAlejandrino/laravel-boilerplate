@@ -21,11 +21,11 @@ export default function ActivityLogsIndex({ logs, filters }: Props) {
                 <div className="flex items-center justify-between">
                     <h1 className="text-2xl font-semibold">Activity Logs</h1>
                 </div>
-                <DataTableSearch
-                    url={activityLogs.index().url}
-                    initialValue={filters.search}
-                    placeholder="Search logs..."
-                />
+                    <DataTableSearch
+                        url={activityLogs.index().url}
+                        initialValue={filters.search}
+                        placeholder="Search logs..."
+                    />
                 <ActivityLogTable logs={logs} filters={filters} />
                 <DataTablePagination
                     meta={logs.meta}
