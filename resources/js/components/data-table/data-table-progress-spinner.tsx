@@ -7,7 +7,10 @@ type Props = {
 export function DataTableProgressSpinner({ isFetching }: Readonly<Props>) {
     if (isFetching) {
         return (
-            <div className="absolute z-20 flex h-full w-full items-center justify-center bg-gray-100/50">
+            <div
+                className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100/50"
+                style={{ top: '40px' }}
+            >
                 <Spinner className="size-6" />
             </div>
         );
