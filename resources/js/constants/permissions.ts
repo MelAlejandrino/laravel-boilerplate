@@ -8,6 +8,7 @@ export const PERMISSIONS = {
     ROLE_CREATE: 'create roles',
     ROLE_EDIT: 'edit roles',
     ROLE_DELETE: 'delete roles',
+    ACTIVITY_LOG_VIEW: 'view activity logs',
 } as const;
 
 export type Permission = typeof PERMISSIONS[keyof typeof PERMISSIONS];

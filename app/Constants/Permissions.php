@@ -16,6 +16,9 @@ class Permissions
     const ROLE_EDIT = 'edit roles';
     const ROLE_DELETE = 'delete roles';
 
+    const ACTIVITY_LOG_VIEW = 'view activity logs';
+
+
     const ALL = [
         self::DASHBOARD_VIEW,
         self::USER_VIEW,
@@ -26,5 +29,6 @@ class Permissions
         self::ROLE_CREATE,
         self::ROLE_EDIT,
         self::ROLE_DELETE,
+        self::ACTIVITY_LOG_VIEW
     ];
 }

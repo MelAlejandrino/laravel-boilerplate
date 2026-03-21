@@ -2,10 +2,12 @@
 
 namespace App\Listeners;
 
+use App\Models\User;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class CreateSanctumTokenOnLogin
+class LogActivityOnLogout
 {
     /**
      * Create the event listener.
@@ -18,13 +20,11 @@ class CreateSanctumTokenOnLogin
     /**
      * Handle the event.
      */
-    public function handle(object $event): void
+    public function handle(Logout $event): void
     {
-        $token = $event->user->createToken('web-session')->plainTextToken;
-        session(['api_token' => $token]);
-
         activity()
-            ->causedBy($event->user)
-            ->log('Logged in');
+            ->causedBy($event->user instanceof User ? $event->user : null)
+            ->log('Logged out')
+        ;
     }
 }

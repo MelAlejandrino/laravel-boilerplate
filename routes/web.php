@@ -1,6 +1,7 @@
 <?php
 
 use App\Constants\Permissions;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'update' => 'permission:' . Permissions::ROLE_EDIT,
         'destroy' => 'permission:' . Permissions::ROLE_DELETE,
     ]);
+
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])
+        ->name('activity-logs.index')
+        ->middleware('permission:' . Permissions::ACTIVITY_LOG_VIEW);
 });
 
 require __DIR__ . '/settings.php';

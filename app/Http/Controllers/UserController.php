@@ -54,6 +54,17 @@ class UserController extends Controller
 
         if ($request->roles) {
             $user->syncRoles($request->roles);
+
+            activity()
+                ->performedOn($user)
+                ->causedBy(Auth::user())
+                ->withProperties(['roles' => $request->roles])
+                ->log("User \"{$user->name}\" created with roles: " . implode(', ', $request->roles));
+        } else {
+            activity()
+                ->performedOn($user)
+                ->causedBy(Auth::user())
+                ->log("User \"{$user->name}\" created");
         }
 
         return back()->with('success', 'User successfully created.');
@@ -65,6 +76,8 @@ class UserController extends Controller
             return back()->with('error', 'Super admin user cannot be modified.');
         }
 
+        $oldRoles = $user->getRoleNames()->toArray();
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -73,6 +86,18 @@ class UserController extends Controller
 
         if ($request->roles) {
             $user->syncRoles($request->roles);
+            $newRoles = $request->roles;
+
+            if ($oldRoles !== $newRoles) {
+                activity()
+                    ->performedOn($user)
+                    ->causedBy(Auth::user())
+                    ->withProperties([
+                        'old_roles' => $oldRoles,
+                        'new_roles' => $newRoles,
+                    ])
+                    ->log("User \"{$user->name}\" roles changed from [" . implode(', ', $oldRoles) . "] to [" . implode(', ', $newRoles) . "]");
+            }
         }
 
         return back()->with('success', 'User successfully updated.');
