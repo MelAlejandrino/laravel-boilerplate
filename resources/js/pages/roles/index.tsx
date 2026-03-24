@@ -16,6 +16,7 @@ import { usePermission } from '@/hooks/use-permission';
 import AppLayout from '@/layouts/app-layout';
 import { index } from '@/routes/roles';
 import type { Flash } from '@/types';
+import { CardTitle } from '@/components/ui/card';
 
 interface Props {
     roles: PaginatedData<Role>;
@@ -48,19 +49,20 @@ export default function RolesIndex({
         <AppLayout>
             <Head title="Roles" />
             <div className="flex flex-col gap-4 p-4">
+                <h1 className="text-2xl font-semibold">Roles</h1>
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Roles</h1>
+                    <DataTableSearch
+                        url={index().url}
+                        initialValue={filters.search}
+                        placeholder="Search roles..."
+                    />
                     {hasPermission(PERMISSIONS.ROLE_CREATE) && (
                         <Button onClick={() => open('create')}>
                             Create Role
                         </Button>
                     )}
                 </div>
-                <DataTableSearch
-                    url={index().url}
-                    initialValue={filters.search}
-                    placeholder="Search roles..."
-                />
+
                 <RoleTable filters={filters} roles={roles} />
                 <DataTablePagination
                     meta={roles.meta}

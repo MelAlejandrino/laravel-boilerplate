@@ -41,19 +41,20 @@ export default function UsersIndex({ users, roles, filters, flash }: Props) {
         <AppLayout>
             <Head title="Users" />
             <div className="flex flex-col gap-4 p-4">
+                <h1 className="text-2xl font-semibold">Users</h1>
+
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">Users</h1>
+                    <DataTableSearch
+                        url={index().url}
+                        initialValue={filters.search}
+                        placeholder="Search users..."
+                    />
                     {hasPermission(PERMISSIONS.USER_CREATE) && (
                         <Button onClick={() => open('create')}>
                             Create User
                         </Button>
                     )}
                 </div>
-                <DataTableSearch
-                    url={index().url}
-                    initialValue={filters.search}
-                    placeholder="Search users..."
-                />
                 <UserTable users={users} filters={filters} />
                 <DataTablePagination
                     meta={users.meta}
